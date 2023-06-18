@@ -662,4 +662,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0bf301ea9b8ec53e33437a7e97742ba651c56a71d3feea017809a9510d92d2f6"
+content-hash = "e790064e5e3a0dd7433d2d565cdbdb352d1b028ca28775ed88af84788d620429"
