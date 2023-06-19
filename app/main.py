@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-import yaml
+
+from .routers.healthcheck import router as root_router
+
 app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return {"message": "python_tracker app", "title": "python_tracker"}
+app.include_router(root_router)
