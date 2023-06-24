@@ -6,7 +6,7 @@ format: ## Lint and static-chec
 	black --skip-string-normalization .
 	mypy app/main.py
 
-test: setup
+test:
 	python3 -m unittest
 
 setup:
