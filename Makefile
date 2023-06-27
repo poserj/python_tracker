@@ -10,5 +10,7 @@ test:
 	python3 -m unittest
 
 setup:
+	python -m venv dev
+	source dev/bin/activate
 	pip3 install poetry
 	poetry install
