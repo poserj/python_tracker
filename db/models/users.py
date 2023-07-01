@@ -5,8 +5,8 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    created_on: datetime
-    updated_on: datetime
+    created_on: str#datetime
+    updated_on: str#datetime
 
 class Passwd(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, \

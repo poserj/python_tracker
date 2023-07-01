@@ -1,7 +1,5 @@
-import datetime
 from typing import Optional
-
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, SQLModel
 
 
 class Course(SQLModel, table=True):
@@ -25,7 +23,7 @@ class Study_course(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", primary_key=True)
     course_id: int = Field(foreign_key="course.id", primary_key=True)
     finished: Optional[bool] = False
-    last_access_date: Optional[datetime] = None
+    last_access_date: Optional[str] = None#Optional[datetime] = None
 
 class Study_lesson(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", primary_key=True)
