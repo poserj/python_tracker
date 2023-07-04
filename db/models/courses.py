@@ -1,33 +1,37 @@
 from typing import Optional
+
 from sqlmodel import Field, SQLModel
 
 
-class Course(SQLModel, table=True):
+class Courses(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
-    author: int = Field(foreign_key="user.id")
+    author: int = Field(foreign_key="users.id")
     description: str
 
-class Lesson(SQLModel, table=True):
+
+class Lessons(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
-    author: int = Field(foreign_key="user.id")
+    author: int = Field(foreign_key="users.id")
     conntext: str
 
-class Courses_context(SQLModel, table=True):
+
+class CoursesContexts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    lesson_id: int = Field(foreign_key="lesson.id")
-    course_id: int = Field(foreign_key="course.id")
+    lesson_id: int = Field(foreign_key="lessons.id")
+    course_id: int = Field(foreign_key="courses.id")
 
-class Study_course(SQLModel, table=True):
-    user_id: int = Field(foreign_key="user.id", primary_key=True)
-    course_id: int = Field(foreign_key="course.id", primary_key=True)
+
+class StudyCourses(SQLModel, table=True):
+    user_id: int = Field(foreign_key="users.id", primary_key=True)
+    course_id: int = Field(foreign_key="courses.id", primary_key=True)
     finished: Optional[bool] = False
-    last_access_date: Optional[str] = None#Optional[datetime] = None
+    last_access_date: Optional[str] = None  # Optional[datetime] = None
 
-class Study_lesson(SQLModel, table=True):
-    user_id: int = Field(foreign_key="user.id", primary_key=True)
-    lesson_id: int = Field(foreign_key="lesson.id", primary_key=True)
+
+class StudyLessons(SQLModel, table=True):
+    user_id: int = Field(foreign_key="users.id", primary_key=True)
+    lesson_id: int = Field(foreign_key="lessons.id", primary_key=True)
     status: bool
     last_access_date: str
-
