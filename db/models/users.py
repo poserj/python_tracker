@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class BaseUser(SQLModel):
@@ -9,23 +9,30 @@ class BaseUser(SQLModel):
     updated_on: datetime = Field(default=datetime.now())
 
 
-class Users(BaseUser, SQLModel, table=True):
+class UsersRole(SQLModel, table=True):
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id", \
+                                   primary_key=True)
+    role_id: Optional[int] = Field(default=None, foreign_key="role.id", \
+                                   primary_key=True)
+
+
+class User(BaseUser, SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
+    roles: list['Role'] = Relationship(back_populates='users', \
+                                       link_model=UsersRole)
+    password: Optional['Passwd'] = Relationship(back_populates='user_pass')
 
 
-class Passwds(BaseUser, SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True, foreign_key="users.id")
+class Passwd(BaseUser, SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True, foreign_key="user.id")
     passwd: str
     salt: str
+    user_pass: Optional[User] = Relationship(back_populates='password')
 
 
-class Roles(SQLModel, table=True):
+class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     role: str
-
-
-class UsersRoles(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(default=None, foreign_key="users.id")
-    roles_id: int = Field(default=None, foreign_key="roles.id")
+    users: list[User] = Relationship(back_populates='roles', \
+                                     link_model=UsersRole)
