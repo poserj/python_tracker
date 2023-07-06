@@ -12,7 +12,7 @@ def create_tables():
 
 def insert_test_data():
     db_conf = init_db()
-    engine = create_engine(db_conf['DATABASE_URL'], echo=db_conf['DEBUG_MOD'])
+    engine = create_engine('sqlite:///./data.db', echo=db_conf['DEBUG_MOD'])
     # with Session(engine) as session:
         # n_adm = Role(role='super admin')
         # passw = Passwd(passwd='111109876633', salt='ccddeffcc')
