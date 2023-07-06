@@ -19,3 +19,6 @@ table_create:
 
 test2:
 	python db/quest2.py
+
+test1:
+	python db/qest1.py
