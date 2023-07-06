@@ -14,16 +14,15 @@ def insert_test_data():
     db_conf = init_db()
     engine = create_engine(db_conf['DATABASE_URL'], echo=db_conf['DEBUG_MOD'])
     with Session(engine) as session:
-        s = select(Role.id).where(Role.role == 'author')
-        role_autor = session.exec(s).one()
+        # s = select(Role.id).where(Role.role == 'author')
+        # role_autor = session.exec(s).one()
         n_adm = Role(role='super admin')
-        print('select', role_autor)
+        # print('select', role_autor)
         passw = Passwd(passwd='111109876633', salt='ccddeffcc')
-        print('role', role_autor)
+        # print('role', role_autor)
         vasy = User(name='igor Author', roles=[n_adm], password=[passw])
-        course_history = Course(title='fastapi2', users_of_course=[vasy], description='2 attemp',  \
+        course_history = Lesson(title='fastapi2', users_of_lessons=[vasy], conntext='2 attemp',  \
                                 author=vasy)
-        print(vasy)
         session.add(course_history)
         session.commit()
         session.refresh(course_history)
@@ -34,5 +33,5 @@ def insert_test_data():
 
 
 if __name__ == '__main__':
-    #create_tables()
+    create_tables()
     insert_test_data()

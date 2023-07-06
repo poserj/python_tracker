@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from models.courses import StudyCourse
+from models.courses import StudyCourse, StudyLesson
 from sqlmodel import Field, Relationship, SQLModel
+
 
 
 class BaseUser(SQLModel):
@@ -27,6 +28,10 @@ class User(BaseUser, SQLModel, table=True):
     author_courses: list['Course'] = Relationship(back_populates="author")
     user_courses: list['Course'] = Relationship(
         back_populates='users_of_course', link_model=StudyCourse
+    )
+    author_lessons: list['Lesson'] = Relationship(back_populates="author")
+    user_lessons: list['Lesson'] = Relationship(
+        back_populates='users_of_lessons', link_model=StudyLesson
     )
 
 

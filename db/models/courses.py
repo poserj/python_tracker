@@ -8,11 +8,7 @@ class BaseAccessDate(SQLModel):
     finished: Optional[bool] = Field(default=False)
     last_access_date: Optional[datetime] = Field(default=datetime.now())
 
-class Lesson(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    title: str
-    author: int = Field(foreign_key="user.id")
-    conntext: str
+
 
 
 class CoursesContext(SQLModel, table=True):
@@ -40,4 +36,15 @@ class Course(SQLModel, table=True):
     author: Optional['User'] = Relationship(back_populates="author_courses")
     users_of_course: list['User'] = Relationship(
         back_populates="user_courses", link_model=StudyCourse
+    )
+
+
+class Lesson(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    author_id: int = Field(foreign_key="user.id")
+    conntext: str
+    author: Optional['User'] = Relationship(back_populates="author_lessons")
+    users_of_lessons: list['User'] = Relationship(
+        back_populates="user_lessons", link_model=StudyLesson
     )
