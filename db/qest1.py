@@ -4,8 +4,6 @@ from models.users import Passwd, Role, User, UsersRole
 from sqlmodel import Session, SQLModel, create_engine, select
 
 
-
-
 def create_tables():
     db_conf = init_db()
     engine = create_engine(db_conf['DATABASE_URL'], echo=db_conf['DEBUG_MOD'])

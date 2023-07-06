@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlmodel import Field, Relationship, SQLModel
 from models.courses import StudyCourse
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class BaseUser(SQLModel):
@@ -25,8 +25,9 @@ class User(BaseUser, SQLModel, table=True):
     roles: list['Role'] = Relationship(back_populates='users', link_model=UsersRole)
     password: Optional['Passwd'] = Relationship(back_populates='user_pass')
     author_courses: list['Course'] = Relationship(back_populates="author")
-    user_courses: list['Course'] = Relationship(back_populates='users_of_course', \
-                                                link_model=StudyCourse)
+    # user_courses: list['Course'] = Relationship(
+    #     back_populates='users_of_course', link_model=StudyCourse
+    # )
 
 
 class Passwd(BaseUser, SQLModel, table=True):
