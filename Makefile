@@ -16,3 +16,6 @@ setup:
 	poetry install
 table_create:
 	python db/database.py
+
+test2:
+	python db/quest2.py
