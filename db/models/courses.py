@@ -38,6 +38,6 @@ class Course(SQLModel, table=True):
     author_id: Optional[int] = Field(foreign_key="user.id", default=None)
     description: Optional[str]
     author: Optional['User'] = Relationship(back_populates="author_courses")
-    # users_of_course: list['User'] = Relationship(
-    #     back_populates="user_courses", link_model=StudyCourse
-    # )
+    users_of_course: list['User'] = Relationship(
+        back_populates="user_courses", link_model=StudyCourse
+    )
