@@ -23,5 +23,5 @@ test1:
 	python db/q1.py
 
 db_up:
-	#sudo docker-compose up -d
-	alembic -c db/alembic.ini upgrade head
+	sudo docker-compose up -d
+	cd db && alembic upgrade head && cd ..
