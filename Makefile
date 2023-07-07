@@ -17,12 +17,11 @@ setup:
 table_create:
 	python db/database.py
 
-test2:
-	python db/quest2.py
+
 
 test1:
-	python db/qest1.py
+	python db/q1.py
 
-prep_db:
-	#docker-compose up -d
+db_up:
+	#sudo docker-compose up -d
 	alembic -c db/alembic.ini upgrade head

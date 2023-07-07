@@ -5,14 +5,12 @@ from sqlmodel import Session, SQLModel, create_engine, select
 
 
 def create_tables():
-    db_conf = init_db()
-    engine = create_engine(db_conf['DATABASE_URL'], echo=db_conf['DEBUG_MOD'])
+    engine = create_engine('sqlite:///./data.db', echo=True)
     SQLModel.metadata.create_all(engine)
 
 
 def insert_test_data():
-    db_conf = init_db()
-    engine = create_engine('sqlite:///./data.db', echo=db_conf['DEBUG_MOD'])
+    engine = create_engine('sqlite:///./data.db', echo=True)
     # with Session(engine) as session:
     # n_adm = Role(role='super admin')
     # passw = Passwd(passwd='111109876633', salt='ccddeffcc')
@@ -25,7 +23,8 @@ def insert_test_data():
 
     with Session(engine) as session:
         passw = Passwd(passwd='111109876633', salt='ccddeffcc')
-        vasy = User(name='pety', role=[1], password=[passw])
+        vasy = User(name='pety', role=[1], password=passw)
+        # vasy = User(name='pety', role=[1], password=[passw])
 
         session.add(vasy)
         session.commit()
