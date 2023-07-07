@@ -25,5 +25,4 @@ test1:
 
 prep_db:
 	#docker-compose up -d
-	cd ./db
-	alembic upgrade head
+	alembic -c db/alembic.ini upgrade head
