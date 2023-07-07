@@ -14,14 +14,14 @@ def insert_test_data():
     db_conf = init_db()
     engine = create_engine('sqlite:///./data.db', echo=db_conf['DEBUG_MOD'])
     # with Session(engine) as session:
-        # n_adm = Role(role='super admin')
-        # passw = Passwd(passwd='111109876633', salt='ccddeffcc')
-        # print('role', n_adm)
-        # vasy = User(name='pety', roles=[n_adm], password=[passw])
-        # # session.add(vasy)
-        # # session.commit()
-        # session.refresh(vasy)
-        # print('vasy after commit', vasy)
+    # n_adm = Role(role='super admin')
+    # passw = Passwd(passwd='111109876633', salt='ccddeffcc')
+    # print('role', n_adm)
+    # vasy = User(name='pety', roles=[n_adm], password=[passw])
+    # # session.add(vasy)
+    # # session.commit()
+    # session.refresh(vasy)
+    # print('vasy after commit', vasy)
 
     with Session(engine) as session:
         passw = Passwd(passwd='111109876633', salt='ccddeffcc')

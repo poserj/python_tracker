@@ -21,8 +21,9 @@ def insert_test_data():
         passw = Passwd(passwd='111109876633', salt='ccddeffcc')
         # print('role', role_autor)
         vasy = User(name='igor Author', roles=[n_adm], password=[passw])
-        course_history = Lesson(title='fastapi2', users_of_lessons=[vasy], conntext='2 attemp',  \
-                                author=vasy)
+        course_history = Lesson(
+            title='fastapi2', users_of_lessons=[vasy], conntext='2 attemp', author=vasy
+        )
         session.add(course_history)
         session.commit()
         session.refresh(course_history)

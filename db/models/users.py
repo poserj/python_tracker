@@ -5,7 +5,6 @@ from models.courses import StudyCourse, StudyLesson
 from sqlmodel import Field, Relationship, SQLModel
 
 
-
 class BaseUser(SQLModel):
     created_on: datetime = Field(default=datetime.now())
     updated_on: datetime = Field(default=datetime.now())
@@ -46,3 +45,9 @@ class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     role: str
     users: list[User] = Relationship(back_populates='roles', link_model=UsersRole)
+
+
+class PasswdV2(BaseUser, SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True, foreign_key="user.id")
+    passwd: str
+    salt: str

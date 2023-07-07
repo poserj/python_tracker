@@ -22,3 +22,8 @@ test2:
 
 test1:
 	python db/qest1.py
+
+prep_db:
+	#docker-compose up -d
+	cd ./db
+	alembic upgrade head

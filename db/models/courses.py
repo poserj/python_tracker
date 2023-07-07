@@ -9,8 +9,6 @@ class BaseAccessDate(SQLModel):
     last_access_date: Optional[datetime] = Field(default=datetime.now())
 
 
-
-
 class CoursesContext(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     lesson_id: int = Field(foreign_key="lesson.id")
@@ -20,7 +18,6 @@ class CoursesContext(SQLModel, table=True):
 class StudyCourse(BaseAccessDate, SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", primary_key=True)
     course_id: int = Field(foreign_key="course.id", primary_key=True)
-
 
 
 class StudyLesson(BaseAccessDate, SQLModel, table=True):
