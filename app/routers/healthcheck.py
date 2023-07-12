@@ -1,15 +1,17 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Request
 
 router = APIRouter()
 
 
+@router.get("/app")
+async def root(request: Request):
+    return {"message": request.scope.get('root_path'), "title": "root"}
+
 @router.get("/")
 async def root():
     return {"message": "python_tracker app", "title": "python_tracker"}
-
-
 @router.get("/courses")
 async def get_courses():
     """информация о всех курсах"""
