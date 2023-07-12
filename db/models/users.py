@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from models.courses import StudyCourse, StudyLesson
+from db.models.courses import StudyCourse, StudyLesson
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
 
 

@@ -1,9 +1,12 @@
 from typing import Annotated
-
+from sqlalchemy import select
 from fastapi import APIRouter, Path, Request
+from sqlmodel import create_engine, Session
+
+from db.models.users import User, UsersRole, Role
 
 router = APIRouter()
-
+engine = create_engine('postgresql+psycopg2://user:pass@localhost:5432/app', echo=True)
 
 @router.get("/app")
 async def get_path_root(request: Request):
@@ -37,3 +40,16 @@ async def get_lesson_inf(lesson_id: Annotated[int, Path(gt=0)]):
 async def get_my_course():
     """информация о курсах юзера и прогресс"""
     return {"title": f"My courses", "message": "My courses progress"}
+
+
+@router.post("/add_user/", response_model=User)
+async def add_user(user: User, role: int):
+    """add new user"""
+    with Session(engine) as session:
+        role_id = session.query(Role).filter(Role.id == role).one()
+        user.roles = [role_id]
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
+

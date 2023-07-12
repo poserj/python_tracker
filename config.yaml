@@ -4,4 +4,5 @@ DB:
   DEBUG_MOD: True
 
 APP:
-  ROOT_PATH: '/api'
+  #ROOT_PATH: '/api'
+  ROOT_PATH: ''
