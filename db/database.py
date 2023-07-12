@@ -8,8 +8,5 @@ def create_tables():
     SQLModel.metadata.create_all(engine)
 
 
-
-
 if __name__ == '__main__':
     pass
-

@@ -42,8 +42,7 @@ class Passwd(BaseUser, SQLModel, table=True):
 
 
 class Role(SQLModel, table=True):
-    __table_args__ = (UniqueConstraint('role', name='uc_role')),
+    __table_args__ = ((UniqueConstraint('role', name='uc_role')),)
     id: Optional[int] = Field(default=None, primary_key=True)
     role: str
     users: list[User] = Relationship(back_populates='roles', link_model=UsersRole)
-
