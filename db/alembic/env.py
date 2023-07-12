@@ -1,8 +1,8 @@
 from logging.config import fileConfig
 
 from alembic import context
-from models.courses import Course, CoursesContext, Lesson, StudyCourse, StudyLesson
-from models.users import Passwd, PasswdV2, Role, User, UsersRole
+from models.courses import *
+from models.users import *
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
