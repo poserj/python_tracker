@@ -26,4 +26,5 @@ test1:
 db_up:
 	sudo docker-compose up -d
 	sleep 5
-	cd db && alembic upgrade head && cd ..
+	alembic -c ./db/alembic.ini upgrade head
+

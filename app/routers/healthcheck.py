@@ -47,7 +47,7 @@ async def add_user(user: User, role: int):
     """add new user"""
     with Session(engine) as session:
         role_id = session.query(Role).filter(Role.id == role).one()
-        user.roles = [role_id]
+        user.roles = [role_idma]
         session.add(user)
         session.commit()
         session.refresh(user)
