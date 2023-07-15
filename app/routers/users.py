@@ -1,15 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.helpers import init_db
+from db.helpers import get_session
 from db.models.users import Role, User
 
-config = init_db()
 router = APIRouter()
-engine = create_async_engine(config['DATABASE_URL'], echo=config['DEBUG_MOD'])
 
 
 @router.get("/app")
@@ -46,21 +44,20 @@ async def get_my_course():
     return {"title": f"My courses", "message": "My courses progress"}
 
 
-@router.post(
-    "/add_user/", status_code=status.HTTP_201_CREATED
-)
-async def add_user(user: User, role_id: int):
+@router.post("/add_user/", status_code=status.HTTP_201_CREATED)
+async def add_user(
+    *, session: AsyncSession = Depends(get_session), user: User, role_id: int
+):
     """add new user"""
-    async with AsyncSession(engine) as session:
-        q_role_id = select(Role).filter(Role.id == role_id)
-        fut_role_id = await session.execute(q_role_id)
-        role: Role = fut_role_id.scalar()
-        print(role)
-        if role:
-            user.roles = [role]
-            session.add(user)
-            await session.commit()
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="role not found"
-            )
+    q_role_id = select(Role).filter(Role.id == role_id)
+    fut_role_id = await session.execute(q_role_id)
+    role: Role | None = fut_role_id.scalar()
+    print(role)
+    if role:
+        user.roles = [role]
+        session.add(user)
+        await session.commit()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="role not found"
+        )

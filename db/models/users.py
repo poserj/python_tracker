@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
 
-from db.models.courses import StudyCourse, StudyLesson
+from db.models.courses import Course, Lesson, StudyCourse, StudyLesson
 
 
 class BaseUser(SQLModel):
@@ -28,15 +28,14 @@ class User(BaseUser, table=True):
     email: EmailStr
     roles: list['Role'] = Relationship(back_populates='users', link_model=UsersRole)
     password: Optional['Passwd'] = Relationship(back_populates='user_pass')
-    author_courses: list['Course'] = Relationship(back_populates="author")
-    user_courses: list['Course'] = Relationship(
+    author_courses: list[Course] = Relationship(back_populates="author")
+    user_courses: list[Course] = Relationship(
         back_populates='users_of_course', link_model=StudyCourse
     )
-    author_lessons: list['Lesson'] = Relationship(back_populates="author")
-    user_lessons: list['Lesson'] = Relationship(
+    author_lessons: list[Lesson] = Relationship(back_populates="author")
+    user_lessons: list[Lesson] = Relationship(
         back_populates='users_of_lessons', link_model=StudyLesson
     )
-
 
 
 class Passwd(BaseUser, SQLModel, table=True):
