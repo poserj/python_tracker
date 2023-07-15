@@ -1,12 +1,16 @@
 from typing import Annotated
-from sqlalchemy import select
+
 from fastapi import APIRouter, Path, Request
-from sqlmodel import create_engine, Session
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-from db.models.users import User, UsersRole, Role
-
+from db.models.users import Role, User, UsersRole
+from db.helpers import init_db
+config = init_db()
 router = APIRouter()
-engine = create_engine('postgresql+psycopg2://user:pass@localhost:5432/app', echo=True)
+engine = create_async_engine(config['DATABASE_URL'], echo=config['DEBUG_MOD'])
+
 
 @router.get("/app")
 async def get_path_root(request: Request):
@@ -42,14 +46,16 @@ async def get_my_course():
     return {"title": f"My courses", "message": "My courses progress"}
 
 
-@router.post("/add_user/", response_model=User)
+@router.post("/add_user/")#, response_model=User)
 async def add_user(user: User, role: int):
     """add new user"""
-    with Session(engine) as session:
-        role_id = session.query(Role).filter(Role.id == role).one()
-        user.roles = [role_idma]
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        return user
-
+    async with AsyncSession(engine) as session:
+        #role_id = await session.query(Role).filter(Role.id == role).one()
+        q_role_id = select(Role).filter(Role.id == role)
+        role_id: int = await session.execute(q_role_id).results().one()
+        print(role_id)
+        # user.roles = [role_id]
+        # await session.add(user)
+        # await session.commit()
+        # await session.refresh(user)
+        # return user

@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from db.models.courses import StudyCourse, StudyLesson
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+from pydantic import EmailStr
+from db.models.courses import StudyCourse, StudyLesson
 
 
 class BaseUser(SQLModel):
@@ -19,9 +20,11 @@ class UsersRole(SQLModel, table=True):
     )
 
 
-class User(BaseUser, SQLModel, table=True):
+class User(BaseUser, table=True):
+    __table_args__ = ((UniqueConstraint('email', name='uc_user_email')),)
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
+    email: EmailStr
     roles: list['Role'] = Relationship(back_populates='users', link_model=UsersRole)
     password: Optional['Passwd'] = Relationship(back_populates='user_pass')
     author_courses: list['Course'] = Relationship(back_populates="author")
@@ -33,6 +36,24 @@ class User(BaseUser, SQLModel, table=True):
         back_populates='users_of_lessons', link_model=StudyLesson
     )
 
+class UserAdd(SQLModel):
+    name: str
+    email: EmailStr
+
+class UserRead(SQLModel):
+    id: int
+    name: str
+    email: EmailStr
+    roles: list['Role'] = Relationship(back_populates='users', link_model=UsersRole)
+    password: Optional['Passwd'] = Relationship(back_populates='user_pass')
+    author_courses: list['Course'] = Relationship(back_populates="author")
+    user_courses: list['Course'] = Relationship(
+        back_populates='users_of_course', link_model=StudyCourse
+    )
+    author_lessons: list['Lesson'] = Relationship(back_populates="author")
+    user_lessons: list['Lesson'] = Relationship(
+        back_populates='users_of_lessons', link_model=StudyLesson
+    )
 
 class Passwd(BaseUser, SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, foreign_key="user.id")

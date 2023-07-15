@@ -1,10 +1,10 @@
 import yaml
 from fastapi import FastAPI
 
-from .routers.healthcheck import router
+from .routers.users import router
 
 
-def get_config() -> dict:
+def get_app_config() -> dict:
     with open("config.yaml", "r") as stream:
         try:
             data = yaml.safe_load(stream)
@@ -14,7 +14,7 @@ def get_config() -> dict:
 
 
 def init_app() -> FastAPI:
-    config: dict = get_config()
+    config: dict = get_app_config()
     app = FastAPI()
     app.include_router(router)
     return app

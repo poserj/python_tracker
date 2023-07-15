@@ -15,8 +15,9 @@ setup:
 	source dev/bin/activate
 	pip3 install poetry
 	poetry install
+
 table_create:
-	python db/database.py
+	alembic -c ./db/alembic.ini upgrade head
 
 
 
