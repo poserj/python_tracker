@@ -5,7 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.helpers import get_session
-from db.models.users import Role, User
+from db.models.courses import Course, StudyCourse
+from db.models.users import Role, User, UsersRole
 
 router = APIRouter()
 
@@ -38,13 +39,51 @@ async def get_lesson_inf(lesson_id: Annotated[int, Path(gt=0)]):
     return {"title": f"Lesson {lesson_id}", "message": "Theme of lesson"}
 
 
-@router.get("/my_course/")
-async def get_my_course():
-    """информация о курсах юзера и прогресс"""
-    return {"title": f"My courses", "message": "My courses progress"}
+@router.get("/user/{user_id}")
+async def get_user_inf(
+    *, session: AsyncSession = Depends(get_session), user_id: Annotated[int, Path(gt=0)]
+):
+    """show information about user"""
+    q_user = select(User).filter(User.id == user_id)
+    fut_role_id = await session.execute(q_user)
+    user: User | None = fut_role_id.scalar()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail='user not found'
+        )
+    q_user_role = select(UsersRole).filter(UsersRole.user_id == user.id)
+    fut_user_role = await session.execute(q_user_role)
+    user_role: UsersRole = fut_user_role.scalar()
+    q_role = select(Role).filter(Role.id == user_role.role_id)
+    fut_role = await session.execute(q_role)
+    role: Role = fut_role.scalar()
+
+    q_user_course = select(StudyCourse).filter(StudyCourse.user_id == user.id)
+    fut_user_course = await session.execute(q_user_course)
+    study_courses: list[StudyCourse] | None = list(fut_user_course.scalars())
+    user_courses_finished: list[Course] = []
+    user_courses_study: list[Course] = []
+    print("[study_courses", study_courses)
+    if study_courses:
+        for study_course in study_courses:
+            print("[study_course  ", study_course)
+            q_course = select(Course).filter(Course.id == study_course.course_id)
+            fut_course = await session.execute(q_course)
+            course: Course = fut_course.scalar()
+            if study_course.finished:
+                user_courses_finished.append(course)
+            else:
+                user_courses_study.append(course)
+
+    return {
+        "role": role.role,
+        "email": user.email,
+        "study courses": user_courses_study,
+        "finished courses": user_courses_finished,
+    }
 
 
-@router.post("/add_user/", status_code=status.HTTP_201_CREATED)
+@router.post("/user/", status_code=status.HTTP_201_CREATED)
 async def add_user(
     *, session: AsyncSession = Depends(get_session), user: User, role_id: int
 ):
@@ -52,7 +91,6 @@ async def add_user(
     q_role_id = select(Role).filter(Role.id == role_id)
     fut_role_id = await session.execute(q_role_id)
     role: Role | None = fut_role_id.scalar()
-    print(role)
     if role:
         user.roles = [role]
         session.add(user)
