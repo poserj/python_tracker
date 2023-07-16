@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
+from pydantic import conlist, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,10 +34,17 @@ async def get_course_inf(course_id: Annotated[int, Path(gt=0)]):
     return {"title": f"Course {course_id}", "message": "Themes"}
 
 
-@router.get("/lesson/{lesson_id}")
-async def get_lesson_inf(lesson_id: Annotated[int, Path(gt=0)]):
-    """информация об уроке"""
-    return {"title": f"Lesson {lesson_id}", "message": "Theme of lesson"}
+@router.patch("/user/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def change_user_name(
+    *,
+    session: AsyncSession = Depends(get_session),
+    user_id: Annotated[int, Path(gt=0)],
+    name: str):
+    user: User = await session.get(User, user_id)
+    setattr(user, 'name', name)
+    session.add(user)
+    await session.commit()
+
 
 
 @router.get("/user/{user_id}")
