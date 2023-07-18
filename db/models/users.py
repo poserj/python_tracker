@@ -14,10 +14,8 @@ class BaseUser(SQLModel):
 
 class UserRole(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: Optional[int] = Field(
-        default=None, foreign_key="user.id")
-    role_id: Optional[int] = Field(
-        default=None, foreign_key="role.id")
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    role_id: Optional[int] = Field(default=None, foreign_key="role.id")
 
 
 class User(BaseUser, table=True):

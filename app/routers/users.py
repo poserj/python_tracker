@@ -1,7 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Path, Request, status
-from pydantic import Field, conlist
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    HTTPException,
+    Path,
+    Query,
+    Request,
+    status,
+)
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -95,3 +103,19 @@ async def add_user(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="role not found"
         )
+
+
+@router.put("/user/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def change_user_role(
+    *,
+    session: AsyncSession = Depends(get_session),
+    user_id: Annotated[int, Path(gt=0)],
+    role_id: Annotated[int, Query(gt=0)],
+):
+    """change username"""
+    q_user_role = select(UserRole).filter(UserRole.user_id == user_id)
+    fut_user_role = await session.execute(q_user_role)
+    user_role: UserRole = fut_user_role.scalar()
+    user_role.role_id = role_id
+    session.add(user_role)
+    await session.commit()
