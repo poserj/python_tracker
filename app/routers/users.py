@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.helpers import get_session
 from db.models.courses import Course, StudyCourse
-from db.models.users import Role, User, UsersRole
+from db.models.users import Role, User, UserRole
 
 router = APIRouter()
 
@@ -50,9 +50,9 @@ async def get_user_inf(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail='user not found'
         )
-    q_user_role = select(UsersRole).filter(UsersRole.user_id == user.id)
+    q_user_role = select(UserRole).filter(UserRole.user_id == user.id)
     fut_user_role = await session.execute(q_user_role)
-    user_role: UsersRole = fut_user_role.scalar()
+    user_role: UserRole = fut_user_role.scalar()
     role: Role | None = await session.get(Role, user_role.role_id)
     if not role:
         raise HTTPException(

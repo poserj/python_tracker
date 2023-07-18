@@ -12,13 +12,12 @@ class BaseUser(SQLModel):
     updated_on: datetime = Field(default=datetime.now())
 
 
-class UsersRole(SQLModel, table=True):
+class UserRole(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     user_id: Optional[int] = Field(
-        default=None, foreign_key="user.id", primary_key=True
-    )
+        default=None, foreign_key="user.id")
     role_id: Optional[int] = Field(
-        default=None, foreign_key="role.id", primary_key=True
-    )
+        default=None, foreign_key="role.id")
 
 
 class User(BaseUser, table=True):
@@ -26,7 +25,7 @@ class User(BaseUser, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     email: EmailStr
-    roles: list['Role'] = Relationship(back_populates='users', link_model=UsersRole)
+    roles: list['Role'] = Relationship(back_populates='users', link_model=UserRole)
     password: Optional['Passwd'] = Relationship(back_populates='user_pass')
     author_courses: list[Course] = Relationship(back_populates="author")
     user_courses: list[Course] = Relationship(
@@ -49,4 +48,4 @@ class Role(SQLModel, table=True):
     __table_args__ = ((UniqueConstraint('role', name='uc_role')),)
     id: Optional[int] = Field(default=None, primary_key=True)
     role: str
-    users: list[User] = Relationship(back_populates='roles', link_model=UsersRole)
+    users: list[User] = Relationship(back_populates='roles', link_model=UserRole)
