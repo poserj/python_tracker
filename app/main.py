@@ -1,3 +1,6 @@
-from app.helpers import init_app
+from fastapi import FastAPI
 
-app = init_app()
+from .routers.users import router
+
+app = FastAPI()
+app.include_router(router)
