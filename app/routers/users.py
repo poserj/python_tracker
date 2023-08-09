@@ -57,41 +57,29 @@ async def get_user_inf(
     q = q.join(UserRole, UserRole.user_id == User.id)
     q = q.join(Role, Role.id == UserRole.user_id)
     q = q.outerjoin(StudyCourse, StudyCourse.user_id == User.id)
-    q = q.join(Course, Course.id == StudyCourse.course_id)
+    q = q.outerjoin(Course, Course.id == StudyCourse.course_id)
     q = q.where(User.id == user_id)
-    f_r = await session.execute(q)
-    res = f_r.all()
-    # if not res:
-    #     raise HTTPException(
-    #             status_code=status.HTTP_404_NOT_FOUND, detail='information not found'
-    #         )
-    print(res, "=================================")
-    return {"res": res}
-    ##name, email, role, study_courses = res
-
-
-
-    # q_user_course = select(StudyCourse).filter(StudyCourse.user_id == user.id)
-    # fut_user_course = await session.execute(q_user_course)
-    # study_courses: list[StudyCourse] | None = list(fut_user_course.scalars())
-
-    # user_courses_finished: list[Course] = []
-    # user_courses_study: list[Course] = []
-    # if study_courses:
-    #     for study_course in study_courses:
-    #         course: Course | None = await session.get(Course, study_course.course_id)
-    #         if study_course.finished:
-    #             user_courses_finished.append(course)
-    #         else:
-    #             user_courses_study.append(course)
-    #
-    # return {
-    #     "name": name,
-    #     "role": role,
-    #     "email": email,
-    #     "study courses": user_courses_study,
-    #     "finished courses": user_courses_finished,
-    # }
+    res_future = await session.execute(q)
+    res = res_future.all()
+    if not res:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="information not found"
+        )
+    name, email, role, *_ = res[0]
+    user_courses_finished: list = []
+    user_courses_study: list = []
+    for _, _, _, st_course_title, st_course_finished in res:
+        if st_course_finished:
+            user_courses_finished.append(st_course_title)
+        elif st_course_finished is not None:
+            user_courses_study.append(st_course_title)
+    return {
+        "name": name,
+        "role": role,
+        "email": email,
+        "study courses": user_courses_study,
+        "finished courses": user_courses_finished,
+    }
 
 
 @router.post("/user/", status_code=status.HTTP_201_CREATED)
