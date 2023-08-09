@@ -53,40 +53,45 @@ async def get_user_inf(
     *, session: AsyncSession = Depends(get_session), user_id: Annotated[int, Path(gt=0)]
 ):
     """show information about user"""
-    user: User | None = await session.get(User, user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='user not found'
-        )
-    q_user_role = select(UserRole).filter(UserRole.user_id == user.id)
-    fut_user_role = await session.execute(q_user_role)
-    user_role: UserRole = fut_user_role.scalar()
-    role: Role | None = await session.get(Role, user_role.role_id)
-    if not role:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='role not found'
-        )
+    q = select(User.name, User.email, Role.role, Course.title, StudyCourse.finished)
+    q = q.join(UserRole, UserRole.user_id == User.id)
+    q = q.join(Role, Role.id == UserRole.user_id)
+    q = q.outerjoin(StudyCourse, StudyCourse.user_id == User.id)
+    q = q.join(Course, Course.id == StudyCourse.course_id)
+    q = q.where(User.id == user_id)
+    f_r = await session.execute(q)
+    res = f_r.all()
+    # if not res:
+    #     raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND, detail='information not found'
+    #         )
+    print(res, "=================================")
+    return {"res": res}
+    ##name, email, role, study_courses = res
 
-    q_user_course = select(StudyCourse).filter(StudyCourse.user_id == user.id)
-    fut_user_course = await session.execute(q_user_course)
-    study_courses: list[StudyCourse] | None = list(fut_user_course.scalars())
 
-    user_courses_finished: list[Course] = []
-    user_courses_study: list[Course] = []
-    if study_courses:
-        for study_course in study_courses:
-            course: Course | None = await session.get(Course, study_course.course_id)
-            if study_course.finished:
-                user_courses_finished.append(course)
-            else:
-                user_courses_study.append(course)
 
-    return {
-        "role": role.role,
-        "email": user.email,
-        "study courses": user_courses_study,
-        "finished courses": user_courses_finished,
-    }
+    # q_user_course = select(StudyCourse).filter(StudyCourse.user_id == user.id)
+    # fut_user_course = await session.execute(q_user_course)
+    # study_courses: list[StudyCourse] | None = list(fut_user_course.scalars())
+
+    # user_courses_finished: list[Course] = []
+    # user_courses_study: list[Course] = []
+    # if study_courses:
+    #     for study_course in study_courses:
+    #         course: Course | None = await session.get(Course, study_course.course_id)
+    #         if study_course.finished:
+    #             user_courses_finished.append(course)
+    #         else:
+    #             user_courses_study.append(course)
+    #
+    # return {
+    #     "name": name,
+    #     "role": role,
+    #     "email": email,
+    #     "study courses": user_courses_study,
+    #     "finished courses": user_courses_finished,
+    # }
 
 
 @router.post("/user/", status_code=status.HTTP_201_CREATED)
