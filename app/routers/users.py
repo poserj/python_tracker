@@ -112,7 +112,7 @@ async def change_user_role(
     user_id: Annotated[int, Path(gt=0)],
     role_id: Annotated[int, Query(gt=0)],
 ):
-    """change username"""
+    """change role"""
     q_user_role = select(UserRole).filter(UserRole.user_id == user_id)
     fut_user_role = await session.execute(q_user_role)
     user_role: UserRole = fut_user_role.scalar()
