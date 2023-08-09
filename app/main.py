@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .routers.healthcheck import router as router
+from .routers.users import router
 
 app = FastAPI()
 app.include_router(router)

@@ -15,8 +15,9 @@ setup:
 	source dev/bin/activate
 	pip3 install poetry
 	poetry install
+
 table_create:
-	python db/database.py
+	alembic -c ./db/alembic.ini upgrade head
 
 
 
@@ -25,4 +26,6 @@ test1:
 
 db_up:
 	sudo docker-compose up -d
-	cd db && alembic upgrade head && cd ..
+	sleep 5
+	alembic -c ./db/alembic.ini upgrade head
+
