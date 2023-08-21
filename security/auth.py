@@ -31,9 +31,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 async def authenticate_user(
-    *, session: AsyncSession = Depends(get_session), \
-        email: EmailStr, \
-        passwd: str
+    *, session: AsyncSession = Depends(get_session), email: EmailStr, passwd: str
 ):
     # user_q = select(User)
     # user_q = user_q.where(User.email == email)
@@ -41,7 +39,6 @@ async def authenticate_user(
     # res = res_future.all()
     # print('cccc')
     user: User | None = await session.get(User, 1)
-
 
     # if not user:
     #     return False
