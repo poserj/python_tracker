@@ -12,6 +12,12 @@ class BaseUser(SQLModel):
     updated_on: datetime = Field(default=datetime.now())
 
 
+class UserInfFromToken(SQLModel, table=False):
+    email: str | None = None
+    username: str | None = None
+    role: str | None = None
+
+
 class UserRole(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")

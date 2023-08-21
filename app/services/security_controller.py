@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from app.helpers import init_security
@@ -9,10 +8,9 @@ from app.services.user_controller import UserController
 
 config = init_security()
 print(config)
+from db.models.users import UserInfFromToken
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def verify_password(plain_password, hashed_password_from_db):
@@ -54,3 +52,16 @@ class SecurityController:
             to_encode, config["SECRET_KEY"], algorithm=config["ALGORITHM"]
         )
         return encoded_jwt
+
+    @staticmethod
+    async def get_current_user(token: str):
+        try:
+            payload = jwt.decode(
+                token, config["SECRET_KEY"], algorithms=config["ALGORITHM"]
+            )
+            username: str = payload.get("username")
+            role: str = payload.get("role")
+            email: str = payload.get("sub")
+            return UserInfFromToken(username=username, email=email, role=role)
+        except JWTError:
+            return False
