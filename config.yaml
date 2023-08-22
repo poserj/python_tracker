@@ -6,7 +6,7 @@ DB:
 APP:
   #ROOT_PATH: '/api'
   ROOT_PATH: ''
-  LOGGER_MODE: True
+  LOGGER_MODE: False
   LOG_FILE: 'py_log.log'
 
 SECURITY:
