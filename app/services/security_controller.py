@@ -6,10 +6,8 @@ from passlib.context import CryptContext
 
 from app.helpers import init_security
 from app.services.user_controller import UserController
-
 from db.models.users import Passwd, Role, User, UserAdd, UserInfFromToken
-from app.logger_project import init_logger
-init_logger()
+
 config = init_security()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -68,7 +66,9 @@ class SecurityController:
             username: str = payload.get("username")
             role: str = payload.get("role")
             email: str = payload.get("sub")
-            user_from_token = UserInfFromToken(username=username, email=email, role=role)
+            user_from_token = UserInfFromToken(
+                username=username, email=email, role=role
+            )
             logging.info(user_from_token)
             return user_from_token
         except JWTError:

@@ -9,8 +9,6 @@ from app.services.security_controller import SecurityController
 from db.helpers import get_session
 from db.models.securities import Token
 from db.models.users import UserInfFromToken
-from app.logger_project import init_logger
-init_logger()
 
 login_router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
@@ -20,9 +18,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 async def login_for_access_token(
     *,
     session: AsyncSession = Depends(get_session),
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ):
-    logging.info(f"input_data: form_data.username={form_data.username}, form_data.password={form_data.password}")
+    logging.info(
+        f"input_data: form_data.username={form_data.username}, form_data.password={form_data.password}"
+    )
     user: UserInfFromToken = await SecurityController.authenticate_user(
         form_data.username, form_data.password, session=session
     )

@@ -5,8 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.courses import Course, StudyCourse
 from db.models.users import Passwd, Role, User, UserRole
-from app.logger_project import init_logger
-init_logger()
+
 
 class UserController:
     @staticmethod

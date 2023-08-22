@@ -17,9 +17,6 @@ from app.services.security_controller import SecurityController
 from app.services.user_controller import UserController
 from db.helpers import get_session
 from db.models.users import UserAdd
-from app.logger_project import init_logger
-init_logger()
-
 
 usr_router = APIRouter()
 

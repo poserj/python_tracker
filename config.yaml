@@ -7,6 +7,7 @@ APP:
   #ROOT_PATH: '/api'
   ROOT_PATH: ''
   LOGGER_MODE: True
+  LOG_FILE: 'py_log.log'
 
 SECURITY:
   SECRET_KEY: 'feojwihewhighigh3347486348y8346946fnbccf0f4caa6cf63b88e8d3e7'
