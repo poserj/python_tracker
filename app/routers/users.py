@@ -12,9 +12,10 @@ from fastapi import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services.security_controller import SecurityController
 from app.services.user_controller import UserController
 from db.helpers import get_session
-from db.models.users import Role, User, UserRole
+from db.models.users import Role, User, UserRole, UserAdd
 
 usr_router = APIRouter()
 
@@ -68,10 +69,11 @@ async def user_get_inf(
 
 @usr_router.post("/", status_code=status.HTTP_201_CREATED)
 async def user_add(
-    *, session: AsyncSession = Depends(get_session), user: User, role_id: int
+    *, session: AsyncSession = Depends(get_session),
+        user: UserAdd
 ):
     """add new user"""
-    if not await UserController.user_add(user, role_id, session=session):
+    if not await SecurityController.user_add(user, session=session):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="incorrect data or email not unique",

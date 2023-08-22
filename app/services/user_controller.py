@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.courses import Course, StudyCourse
-from db.models.users import Role, User, UserRole
+from db.models.users import Role, User, UserRole, Passwd
 
 
 class UserController:
@@ -32,26 +32,28 @@ class UserController:
 
     @staticmethod
     async def get_user_inf_role_from_email(email: str, session: AsyncSession):
-        """get name, email, role, courses from user id"""
-        # user_q = select(User)
-        # user_q = user_q.where(User.email == email)
-        # res_future = await session.execute(user_q)
-        # user: User = res_future.scalar()
+        user_dict = dict()
         q = (
-            select(User.name, User.email, Role.role)
+            select(User.name, User.email, Role.role, Passwd.passwd)
             .join(UserRole, UserRole.user_id == User.id)
             .join(Role, Role.id == UserRole.role_id)
+            .join(Passwd, Passwd.id == User.id)
             .where(User.email == email)
         )
         res_future = await session.execute(q)
         res = res_future.one()
+
         """
-        res = ('igor', 'admin_1@example.com', 'administrator')
+        res = ('igor', 'admin_1@example.com', 'administrator', 'password')
         """
         if not res:
             return None
         else:
-            return res
+            user_dict["name"],\
+                user_dict["email"],\
+                user_dict["role"],\
+                user_dict["passwd"] = res
+            return user_dict
 
     @staticmethod
     def get_filtered_course_from_status(res: list) -> dict:
@@ -67,16 +69,7 @@ class UserController:
         course_dict["user_courses_study"] = user_courses_study
         return course_dict
 
-    @staticmethod
-    async def user_add(user: User, role_id: int, session):
-        role: Role | None = await session.get(Role, role_id)
-        try:
-            user.roles = [role]
-            session.add(user)
-            await session.commit()
-            return True
-        except:
-            return False
+
 
     @staticmethod
     async def user_change_name(user_id, name, session):

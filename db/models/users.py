@@ -17,6 +17,13 @@ class UserInfFromToken(SQLModel, table=False):
     username: str | None = None
     role: str | None = None
 
+class UserAdd(SQLModel, table=False):
+    email: str | None = None
+    username: str | None = None
+    role: int | None = None
+    password: str | None = None
+
+
 
 class UserRole(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
